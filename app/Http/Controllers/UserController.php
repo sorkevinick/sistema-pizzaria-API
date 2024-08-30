@@ -85,7 +85,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'status' => 404,
-                'mensagem' => 'Usuário não foi encontrado!'
+                'mensagem' => 'Não foi possível localizar o usuário especificado.'
             ], 404);
         }
 
@@ -95,9 +95,16 @@ class UserController extends Controller
             'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
         ]);
 
+        $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id,
+        'password' => 'nullable|string|min:8',
+        ]);
+
+
         return response()->json([
             'status' => 200,
-            'mensagem' => 'Usuário foi atualizado com sucesso!',
+            'mensagem' => 'Os dados do usuário foram atualizados com êxito!',
             'user' => $user
         ]);
     }
@@ -112,7 +119,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'status' => 404,
-                'mensagem' => 'Usuário não foi encontrado!'
+                'mensagem' => 'Não foi possível localizar o usuário especificado.'
             ], 404);
         }
 
